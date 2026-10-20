@@ -59,6 +59,22 @@ python -m unittest discover -s tests -v
 
 Running the tool needs no API key, model download, network call, paid service, or confidential data.
 
+## Deployment
+
+Cloudflare Workers is the planned deployment target. This repository has no `wrangler.toml`, Worker entry point, Worker name, bindings, secrets, or workers.dev URL, and nothing is deployed.
+
+When a Worker is configured, deploy the current Worker script with:
+
+```bash
+npx wrangler deploy
+```
+
+Still needed before that command can succeed:
+
+- a `wrangler.toml`
+- a Worker entry point
+- for this Python package, either Cloudflare Python Workers or a JavaScript/TypeScript port
+
 ## Workflow
 
 ```mermaid
