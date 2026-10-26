@@ -1,6 +1,6 @@
 # RiskCouncil
 
-[![CI](https://github.com/MadanMohan0537/riskcouncil/actions/workflows/ci.yml/badge.svg)](https://github.com/MadanMohan0537/riskcouncil/actions/workflows/ci.yml)
+[![CI](https://github.com/MadanMohan0537/launch-premortem-risk-register/actions/workflows/ci.yml/badge.svg)](https://github.com/MadanMohan0537/launch-premortem-risk-register/actions/workflows/ci.yml)
 
 RiskCouncil turns a launch brief into a structured, multi-perspective premortem. Engineering, legal, finance, and customer personas propose risks, rebut one another, preserve concessions, and produce an auditable risk register with mechanisms, likelihood, impact, owners, and mitigations.
 
@@ -21,8 +21,9 @@ Premortems are often skipped, socially constrained, or reduced to generic statem
 - Markdown and JSON exports.
 - Reproducible synthetic Atlas launch fixture.
 - **P1 assumption intervention:** change one launch premise and verify linked risks change while unchanged assumptions act as controls.
+- **P2 risk falsification cards:** attach a scoped disconfirming test, metric threshold, minimum sample, power note, and decision deadline to every risk; never treat weak evidence as safety.
 
-Real LLM adapters, hosted collaboration, blind reviewer collection, historical-incident benchmarks, and organizational postmortem ingestion are planned—not implemented.
+Real LLM adapters, hosted collaboration, blind reviewer collection, historical-incident benchmarks, persona-distinctness audits, and organizational postmortem ingestion are planned—not implemented.
 
 ## Quick start
 
@@ -50,6 +51,8 @@ flowchart TD
     C --> D[Moderator validation and merge]
     D --> E[Risk register and human comparison]
     E --> F[Assumption intervention]
+    E --> G[Falsification cards]
+    G --> H[Retire, keep, or insufficient evidence]
 ```
 
 ## P1 experiment
@@ -62,6 +65,28 @@ The frozen baseline assumes a 100-customer pilot with specialist review. The var
 
 The fixture passes this structural check. That establishes correct intervention behavior, not causal validity. Blind human review is the next required validation.
 
+## P2 falsification experiment
+
+Every frozen register row receives a falsification card. Engineering risks use
+failure-injection load trials, legal risks use a claim-evidence census,
+finance risks use sampled exception cost, and customer risks use task-based
+sessions. Every card records its evidence scope and an explicit power
+limitation.
+
+The reproducible fixture evaluates eight cards:
+
+| Outcome | Count |
+|---|---:|
+| Retirement candidates | 4 |
+| Risks kept | 4 |
+| Insufficient evidence | 0 |
+| Review hours | 4.0 |
+| Retirement candidates per review hour | 1.0 |
+
+A passing threshold is not enough: a sample below the declared minimum or
+evidence from another launch scope returns insufficient evidence. Retirement
+remains a human decision; RiskCouncil only produces candidates.
+
 ## Demo output
 
 The baseline generates eight validated register rows and twenty-four debate notes. Against a three-item synthetic human list, it reports the matched count, recall, and agent risks absent from that list. These numbers are demonstrations over authored fixtures, not evidence of superior facilitation.
@@ -73,13 +98,14 @@ The baseline generates eight validated register rows and twenty-four debate note
 - Mechanisms are mandatory because generic risk labels are not actionable.
 - Likelihood and impact remain visible ordinal judgments, not false probabilities.
 - The deterministic engine makes tests free and repeatable; model adapters can be evaluated later without changing the contract.
+- Falsification thresholds and sample sizes are authored assumptions, not guarantees of statistical power.
 
 See [the method and limitations](docs/METHOD.md) and [the rigorous backlog](docs/BACKLOG.md).
 
 ## Repository structure
 
 ```text
-riskcouncil/       personas, debate, moderation, comparison, reporting
+riskcouncil/       personas, debate, moderation, comparison, falsification, reporting
 tests/             deterministic workflow and intervention tests
 data/              documented synthetic launch fixture
 docs/              method, limitations, and evidence-driven backlog
@@ -89,3 +115,4 @@ docs/              method, limitations, and evidence-driven backlog
 ## License
 
 MIT
+

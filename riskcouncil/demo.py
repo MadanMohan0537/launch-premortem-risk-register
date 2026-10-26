@@ -8,6 +8,9 @@ from .models import LaunchBrief
 from .moderator import merge_risks, validate_register
 from .personas import DEFAULT_PERSONAS
 from .report import markdown_report
+from .falsification import (
+    EvidenceResult, build_cards, falsification_experiment, validate_cards,
+)
 
 
 def run_demo() -> dict:
@@ -24,6 +27,18 @@ def run_demo() -> dict:
     human = ["Launch load exceeds the tested operating envelope", "Mainstream users fail the new workflow", "Training backlog slows support"]
     comparison = compare_human(baseline, human)
     intervention = intervention_delta(baseline, variant, "audience")
+    cards = build_cards(baseline)
+    evidence = []
+    for index, card in enumerate(cards):
+        if card.operator == "<=":
+            observed = card.threshold * (0.8 if index % 2 == 0 else 1.2)
+        else:
+            observed = min(1.0, card.threshold + 0.05) if index % 2 == 0 else card.threshold - 0.10
+        evidence.append(EvidenceResult(
+            card.card_id, observed, card.minimum_sample, card.scope,
+            "2026-11-10", 0.5,
+        ))
+    falsification = falsification_experiment(cards, evidence)
     return {
         "brief": baseline_brief,
         "risk_count": len(baseline),
@@ -31,5 +46,12 @@ def run_demo() -> dict:
         "register_errors": validate_register(baseline),
         "comparison": comparison,
         "intervention": intervention,
-        "markdown": markdown_report(baseline_brief, baseline, comparison, intervention),
+        "falsification_cards": [card.to_dict() for card in cards],
+        "falsification_errors": validate_cards(cards, baseline),
+        "falsification_experiment": falsification,
+        "markdown": markdown_report(
+            baseline_brief, baseline, comparison, intervention, cards,
+            falsification,
+        ),
     }
+
